@@ -7,9 +7,34 @@
 #include "sha.h"
 #include "sha_viz.h"
 
+uint8_t* loadFile(char* filename)
+{
+    FILE* fd = fopen(filename, "rb");
+
+    //Get file size in bytes
+    fseek(fd, 0, SEEK_END);
+    long size = ftell(fd);
+    rewind(fd);
+    long read;
+
+    //Initialize msg
+    char* msg = (uint8_t*)malloc(size + 1);
+    
+    //Read file content
+    if ((read = fread(msg, 1, size, fd)) != size)
+    {
+        printf("Failed to read file, Real size: %d, Read size: %d", size, read);
+        exit(0);
+    }
+    msg[size] = '\0';
+    fclose(fd);
+    return msg;
+} 
+
 int main(int argc, char* argv[]) {
     int option;
     uint32_t digest[8];
+    uint8_t* msg;
     while ((option = getopt(argc, argv, "hs:f:b:")) != -1) {
         switch (option) {
         case 'h':
@@ -20,13 +45,22 @@ int main(int argc, char* argv[]) {
             return 0;
         case 'f':
             printf("Loading from file\n");
+            msg = (uint8_t*)loadFile((char*)optarg);
+            // printf("El texto es: %s", (char*)msg);
+            // printf("\n");
+            sha256_hash(msg, digest);
+            print_sha256_hash(digest);
+            // v_sha256_hash(msg, digest);
+            // v_print_sha256_hash(digest);
             break;
         case 's':
-            sha256_hash((uint8_t*)optarg, digest);
+            msg = (uint8_t*)optarg;
+            sha256_hash(msg, digest);
             print_sha256_hash(digest);
             break;
         case 'b':
-            v_sha256_hash((uint8_t*)optarg, digest);
+            msg = (uint8_t*)optarg;
+            v_sha256_hash(msg, digest);
             v_print_sha256_hash(digest);
             break;
         default:
@@ -34,4 +68,5 @@ int main(int argc, char* argv[]) {
             return 1;
         }
     }
+    free(msg);
 }

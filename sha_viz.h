@@ -64,6 +64,10 @@ void v_printMemory(uint32_t *ptr, size_t length)
 
     for (size_t i = 0; i < length * sizeof(uint32_t); i++)
     {
+        if (i % 4 == 0)
+        {
+            printf("\n");
+        }
         uint8_t value = bytePtr[i];
         for (int j = 7; j >= 0; j--)
         {
@@ -81,7 +85,7 @@ void v_print_values(int it, int a, int b, int c, int d, int e, int f, int g, int
 
 void v_clearScreen()
 {
-    usleep(10000);
+    usleep(5000);
     printf("\033[2J");
     printf("\033[0;0H");
     fflush(stdout);

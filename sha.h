@@ -5,6 +5,7 @@
 #include <byteswap.h>
 #include <unistd.h>
 #include <immintrin.h>
+#include "chrono.h"
 
 #define H1 0x6a09e667
 #define H2 0xbb67ae85
@@ -145,15 +146,18 @@ void _hash(uint32_t blocks, uint8_t* paddedmsg, uint32_t* digest)
 
 void sha256_hash(uint8_t *msg, uint32_t* digest)
 {
+    startTimer();
     uint8_t *padded = 0;
     uint32_t blocks;
     padded = _pad(msg, padded, strlen((const char*)msg) << 3, &blocks);
     _hash(blocks, padded, digest);
     free(padded);
+    stopTimer();
 }
 
 void print_sha256_hash(uint32_t* digest)
 {
+    printf("Hash computed in: %ld ms\n", getMs());
     printHex(digest, 8);
     printf("\n");
 }
