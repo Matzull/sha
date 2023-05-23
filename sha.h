@@ -1,3 +1,4 @@
+#pragma once
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -6,6 +7,7 @@
 #include <unistd.h>
 #include <immintrin.h>
 #include "chrono.h"
+#include "loading_bar.h"
 
 #define H1 0x6a09e667
 #define H2 0xbb67ae85
@@ -83,6 +85,7 @@ uint8_t* _pad(uint8_t* msg, uint8_t* paddedmsg, uint64_t len, uint32_t* blocks)
 
 void _hash(uint32_t blocks, uint8_t* paddedmsg, uint32_t* digest)
 {
+    init_bar((int)blocks);
     uint32_t a, b, c, d, e, f, g, h;
     uint32_t Hi1 = H1, Hi2 = H2, Hi3 = H3, Hi4 = H4, Hi5 = H5, Hi6 = H6, Hi7 = H7, Hi8 = H8;
     uint32_t w[64];
@@ -96,7 +99,8 @@ void _hash(uint32_t blocks, uint8_t* paddedmsg, uint32_t* digest)
         f = Hi6;
         g = Hi7;
         h = Hi8;
-
+        update_bar();
+        print_bar();
         for (size_t j = 0; j < 64; j++)
         {
             uint32_t ch = CH(e, f, g);
@@ -144,12 +148,12 @@ void _hash(uint32_t blocks, uint8_t* paddedmsg, uint32_t* digest)
     digest[7] = Hi8;
 }
 
-void sha256_hash(uint8_t *msg, uint32_t* digest)
+void sha256_hash(uint8_t *msg, uint32_t* digest, size_t len)
 {
     startTimer();
     uint8_t *padded = 0;
     uint32_t blocks;
-    padded = _pad(msg, padded, strlen((const char*)msg) << 3, &blocks);
+    padded = _pad(msg, padded, len << 3, &blocks);
     _hash(blocks, padded, digest);
     free(padded);
     stopTimer();

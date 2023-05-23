@@ -1,3 +1,4 @@
+#pragma once
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -6,6 +7,7 @@
 #include <unistd.h>
 #include <immintrin.h>
 #include <time.h>
+// #include "loading_bar.h"
 
 #define H1 0x6a09e667
 #define H2 0xbb67ae85
@@ -55,9 +57,6 @@ void v_printBinary(uint8_t *ptr, size_t length)
     printf("\n");
 }
 
-#include <stdint.h>
-#include <stdio.h>
-
 void v_printMemory(uint32_t *ptr, size_t length)
 {
     uint8_t *bytePtr = (uint8_t *)ptr; // Se interpreta el puntero como un puntero a uint8_t
@@ -85,7 +84,7 @@ void v_print_values(int it, int a, int b, int c, int d, int e, int f, int g, int
 
 void v_clearScreen()
 {
-    usleep(5000);
+    // usleep(50);
     printf("\033[2J");
     printf("\033[0;0H");
     fflush(stdout);
@@ -120,6 +119,7 @@ uint8_t* v__pad(uint8_t* msg, uint8_t* paddedmsg, uint64_t len, uint32_t* blocks
 
 void v__hash(uint32_t blocks, uint8_t* paddedmsg, uint32_t* digest)
 {
+    init_bar((int)blocks);
     uint32_t a, b, c, d, e, f, g, h;
     uint32_t Hi[8] = {H1, H2, H3, H4, H5, H6, H7, H8};
     uint32_t w[64];
@@ -133,11 +133,13 @@ void v__hash(uint32_t blocks, uint8_t* paddedmsg, uint32_t* digest)
         f = Hi[5];
         g = Hi[6];
         h = Hi[7];
+        update_bar();
         for (size_t j = 0; j < 64; j++)
         {
             v_clearScreen();
             v_printMemory(Hi,8);
             v_print_values(j, a,b,c,d,e,f,g,h);
+            print_bar();
             uint32_t ch = CH(e, f, g);
             uint32_t maj = MAJ(a, b, c);
             uint32_t sig_0 = SIG0(a);
@@ -183,11 +185,11 @@ void v__hash(uint32_t blocks, uint8_t* paddedmsg, uint32_t* digest)
     digest[7] = Hi[7];
 }
 
-void v_sha256_hash(uint8_t *msg, uint32_t* digest)
+void v_sha256_hash(uint8_t *msg, uint32_t* digest, size_t len)
 {
     uint8_t *padded = 0;
     uint32_t blocks;
-    padded = v__pad(msg, padded, strlen((const char*)msg) << 3, &blocks);
+    padded = v__pad(msg, padded, len << 3, &blocks);
     v__hash(blocks, padded, digest);
     free(padded);
 }
