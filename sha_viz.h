@@ -105,7 +105,7 @@ uint8_t* v__pad(uint8_t* msg, uint8_t* paddedmsg, uint64_t len, uint32_t* blocks
 {
     uint8_t *ptr;
     uint32_t zeroes = 448 - ((len + 1) % 448);
-    uint32_t p_msg_len = (len + 1 + zeroes + 64);
+    uint64_t p_msg_len = (len + 1 + zeroes + 64);
     *blocks = p_msg_len / 512;
     paddedmsg = (uint8_t*)malloc(p_msg_len>>3);
     memset(paddedmsg, 0x00, (*blocks) * 64);
