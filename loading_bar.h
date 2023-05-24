@@ -1,7 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
 #include <sys/ioctl.h>
-
 int _width;
 int _goal;
 int _progress;
@@ -26,7 +23,7 @@ void update_bar()
     _progress += 1;
 }
 
-void print_bar()
+void print_bar_s()
 {
     if ((int)(_inc * _progress) != last)
     {
@@ -45,4 +42,22 @@ void print_bar()
         putchar(']');
         fflush(stdout);
     }
+}
+
+void print_bar()
+{
+    putchar('\r');
+    putchar('[');
+    last = (int)(_inc * _progress);
+    for (int i = 0; i < (int)(_inc * _progress); i++)
+    {
+        putchar('=');
+    }
+    putchar('>');
+    for (int i = 0; i < (int)(_inc * (_goal - _progress)); i++)
+    {
+        putchar(' ');
+    }
+    putchar(']');
+    fflush(stdout);
 }

@@ -1,0 +1,13 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
+#include <string.h>
+#include <byteswap.h>
+#include <unistd.h>
+#include <immintrin.h>
+#include "chrono.h"
+#include "loading_bar.h"
+#include <time.h>
+#include <stdbool.h>
+#include <fcntl.h>
+#include <sys/ioctl.h>

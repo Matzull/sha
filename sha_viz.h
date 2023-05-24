@@ -1,13 +1,7 @@
-#pragma once
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <string.h>
-#include <byteswap.h>
-#include <unistd.h>
-#include <immintrin.h>
-#include <time.h>
-// #include "loading_bar.h"
+#ifndef INC
+#define INC
+#include "includes.h"
+#endif
 
 #define H1 0x6a09e667
 #define H2 0xbb67ae85
@@ -79,12 +73,12 @@ void v_printMemory(uint32_t *ptr, size_t length)
 
 void v_print_values(int it, int a, int b, int c, int d, int e, int f, int g, int h)
 {
-    printf("It = %d a = %08x b = %08x c = %08x d = %08x e = %08x f = %08x g = %08x h = %08x\n", it, a, b, c, d, e, f, g, h);
+    printf("It = %d\na = %08x b = %08x c = %08x d = %08x e = %08x f = %08x g = %08x h = %08x\n", it, a, b, c, d, e, f, g, h);
 }
 
 void v_clearScreen()
 {
-    // usleep(50);
+    usleep(500);
     printf("\033[2J");
     printf("\033[0;0H");
     fflush(stdout);
@@ -138,7 +132,8 @@ void v__hash(uint32_t blocks, uint8_t* paddedmsg, uint32_t* digest)
         {
             v_clearScreen();
             v_printMemory(Hi,8);
-            v_print_values(j, a,b,c,d,e,f,g,h);
+            printf("Current block: %d/%d\n", i, blocks);
+            v_print_values(j,a,b,c,d,e,f,g,h);
             print_bar();
             uint32_t ch = CH(e, f, g);
             uint32_t maj = MAJ(a, b, c);
@@ -187,15 +182,20 @@ void v__hash(uint32_t blocks, uint8_t* paddedmsg, uint32_t* digest)
 
 void v_sha256_hash(uint8_t *msg, uint32_t* digest, size_t len)
 {
+    startTimer();
     uint8_t *padded = 0;
     uint32_t blocks;
     padded = v__pad(msg, padded, len << 3, &blocks);
     v__hash(blocks, padded, digest);
     free(padded);
+    stopTimer();
 }
 
-void v_print_sha256_hash(uint32_t* digest)
+void v_print_sha256_hash(uint32_t* digest, size_t len)
 {
+    printf("\n");
+    printf("Hash computed in: %ld ms\n", getMs());
+    printf("Hashing speed: %f/s", (len/1000000)/(getMs()/1000));
     v_printHex(digest, 8);
     printf("\n");
 }

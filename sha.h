@@ -1,13 +1,7 @@
-#pragma once
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <string.h>
-#include <byteswap.h>
-#include <unistd.h>
-#include <immintrin.h>
-#include "chrono.h"
-#include "loading_bar.h"
+#ifndef INC
+#define INC
+#include "includes.h"
+#endif
 
 #define H1 0x6a09e667
 #define H2 0xbb67ae85
@@ -100,7 +94,7 @@ void _hash(uint32_t blocks, uint8_t* paddedmsg, uint32_t* digest)
         g = Hi7;
         h = Hi8;
         update_bar();
-        print_bar();
+        print_bar_s();
         for (size_t j = 0; j < 64; j++)
         {
             uint32_t ch = CH(e, f, g);
@@ -159,9 +153,11 @@ void sha256_hash(uint8_t *msg, uint32_t* digest, size_t len)
     stopTimer();
 }
 
-void print_sha256_hash(uint32_t* digest)
+void print_sha256_hash(uint32_t* digest, size_t len)
 {
+    printf("\n");
     printf("Hash computed in: %ld ms\n", getMs());
+    printf("Hashing speed: %d MB/s\n", (len/1000000)/(getMs()/1000));
     printHex(digest, 8);
     printf("\n");
 }
