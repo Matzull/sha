@@ -194,8 +194,8 @@ void v_sha256_hash(uint8_t *msg, uint32_t* digest, size_t len)
 void v_print_sha256_hash(uint32_t* digest, size_t len)
 {
     printf("\n");
-    printf("Hash computed in: %ld ms\n", getMs());
-    printf("Hashing speed: %f/s", (len/1000000)/(getMs()/1000));
+    printf("Hash computed in: %ld ms\n", getMicroseconds());
+    printf("Hashing speed: %f/s", (len/1000000)/(getMicroseconds()/1000000));
     v_printHex(digest, 8);
     printf("\n");
 }

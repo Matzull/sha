@@ -156,8 +156,8 @@ void sha256_hash(uint8_t *msg, uint32_t* digest, size_t len)
 void print_sha256_hash(uint32_t* digest, size_t len)
 {
     printf("\n");
-    printf("Hash computed in: %ld ms\n", getMs());
-    printf("Hashing speed: %d MB/s\n", (len/1000000)/(getMs()/1000));
+    printf("Hash computed in: %d ms\n", (int)(getMicroseconds()/1000.0));
+    printf("Hashing speed: %d MB/s\n", (int)((len/1000000.0)/(getMicroseconds()/1000000.0)));
     printHex(digest, 8);
     printf("\n");
 }

@@ -15,7 +15,6 @@ void init_bar(int sections)
     _goal = sections;
     _progress = 0;
     _inc = _width / (double)sections;
-    printf("Bar init with _inc: %f %d / %d\n", _inc, _width, sections);
 }
 
 void update_bar()
