@@ -78,7 +78,7 @@ void v_print_values(int it, int a, int b, int c, int d, int e, int f, int g, int
 
 void v_clearScreen()
 {
-    usleep(500);
+    usleep(500000);
     printf("\033[2J");
     printf("\033[0;0H");
     fflush(stdout);
@@ -117,7 +117,7 @@ void v__hash(uint32_t blocks, uint8_t* paddedmsg, uint32_t* digest)
     uint32_t a, b, c, d, e, f, g, h;
     uint32_t Hi[8] = {H1, H2, H3, H4, H5, H6, H7, H8};
     uint32_t w[64];
-    for (size_t i = 0; i < blocks; i++)
+    for (int i = 0; i < blocks; i++)
     {
         a = Hi[0];
         b = Hi[1];
@@ -128,7 +128,7 @@ void v__hash(uint32_t blocks, uint8_t* paddedmsg, uint32_t* digest)
         g = Hi[6];
         h = Hi[7];
         update_bar();
-        for (size_t j = 0; j < 64; j++)
+        for (int j = 0; j < 64; j++)
         {
             v_clearScreen();
             v_printMemory(Hi,8);
@@ -195,7 +195,7 @@ void v_print_sha256_hash(uint32_t* digest, size_t len)
 {
     printf("\n");
     printf("Hash computed in: %ld ms\n", getMicroseconds());
-    printf("Hashing speed: %f/s", (len/1000000)/(getMicroseconds()/1000000));
+    printf("Hashing speed: %f/s", (len/1000000.0)/(getMicroseconds()/1000000));
     v_printHex(digest, 8);
     printf("\n");
 }

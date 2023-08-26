@@ -20,7 +20,7 @@ uint8_t* loadFile(char* filename, size_t* size)
     //Read file content
     if ((read = fread(msg, 1, *size, fd)) != *size)
     {
-        printf("Failed to read file, Real size: %d, Read size: %d", *size, read);
+        printf("Failed to read file, Real size: %ld, Read size: %ld", *size, read);
         exit(0);
     }
     msg[*size] = '\0';
@@ -39,7 +39,7 @@ int main(int argc, char* argv[]) {
         case 'h':
             printf("-h show this help\n");
             printf("-s hash from argument\n");
-            printf("-b visualitation mode\n");
+            printf("-b graphic mode\n");
             printf("-f hash from file\n");
             return 0;
         case 'f':
@@ -56,6 +56,7 @@ int main(int argc, char* argv[]) {
                 sha256_hash(msg, digest, size);
                 print_sha256_hash(digest, size);
             }
+            free(msg);
             break;
         case 's':
             msg = (uint8_t*)optarg;
@@ -68,7 +69,8 @@ int main(int argc, char* argv[]) {
             {
                 sha256_hash(msg, digest, strlen((const char*)msg));
                 print_sha256_hash(digest, strlen((const char*)msg));
-            }         
+            }
+            free(msg);   
             break;
         case 'b':
             viz = true;
@@ -78,5 +80,4 @@ int main(int argc, char* argv[]) {
             return 1;
         }
     }
-    free(msg);
 }

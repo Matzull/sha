@@ -22,27 +22,6 @@ void update_bar()
     _progress += 1;
 }
 
-void print_bar_s()
-{
-    if ((int)(_inc * _progress) != last)
-    {
-        putchar('\r');
-        putchar('[');
-        last = (int)(_inc * _progress);
-        for (int i = 0; i < (int)(_inc * _progress); i++)
-        {
-            putchar('=');
-        }
-        putchar('>');
-        for (int i = 0; i < (int)(_inc * (_goal - _progress)); i++)
-        {
-            putchar(' ');
-        }
-        putchar(']');
-        fflush(stdout);
-    }
-}
-
 void print_bar()
 {
     putchar('\r');
@@ -58,5 +37,14 @@ void print_bar()
         putchar(' ');
     }
     putchar(']');
+    printf(" %d%%", (int)(((double)(_progress + 1)/_goal)*100));//_progress + 1 is a "cheat" to appear 100% when the progress finishes
     fflush(stdout);
+}
+
+void print_bar_s()
+{
+    if ((int)(_inc * _progress) != last)
+    {
+        print_bar();
+    }
 }
