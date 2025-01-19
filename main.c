@@ -1,7 +1,11 @@
 #define INC
-#include "includes.h"
-#include "sha.h"
-#include "sha_viz.h" 
+#include "includes/includes.h"
+// #include "sha.h"
+#include "includes/sha_hashrate.h" 
+#include <sys/mman.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <sys/stat.h>
 
 
 uint8_t* loadFile(char* filename, size_t* size)
@@ -46,30 +50,16 @@ int main(int argc, char* argv[]) {
             printf("Loading from file\n");
             msg = (uint8_t*)loadFile((char*)optarg, &size);
             printf("Loaded\n");
-            if (viz)
-            {
-                v_sha256_hash(msg, digest, size);
-                v_print_sha256_hash(digest, size);
-            }
-            else
-            {
-                sha256_hash(msg, digest, size);
-                print_sha256_hash(digest, size);
-            }
+            startTimer();
+            v_sha256_hash(msg, digest, size, viz);
+            stopTimer();
+            v_print_sha256_hash(digest, size);
             free(msg);
             break;
         case 's':
             msg = (uint8_t*)optarg;
-            if (viz)
-            {
-                v_sha256_hash(msg, digest, strlen((const char*)msg));
-                v_print_sha256_hash(digest, strlen((const char*)msg));
-            }
-            else
-            {
-                sha256_hash(msg, digest, strlen((const char*)msg));
-                print_sha256_hash(digest, strlen((const char*)msg));
-            }
+            v_sha256_hash(msg, digest, strlen((const char*)msg), viz);
+            v_print_sha256_hash(digest, strlen((const char*)msg));
             free(msg);   
             break;
         case 'b':
